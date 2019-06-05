@@ -1,0 +1,66 @@
+
+Status: work
+
+This project is originally from 
+/home/sliu/book_code/docker_and_kubernetes_for_java_developers_2017/Docker-and-Kubernetes-for-Java-Developers-master/rest-example-multiStages
+
+
+This app builds a jenkins pipeline with microk8s that build, test, deploy the app.
+
+* Use readme.github.txt to create github repository jenkins_microk8s_rest1.
+
+* Start jenkins locally with stages build, test and depoy. Each stage calls a shell to print "build", "test",
+    and "deploy". See readme.start_jenkins.txt.
+    Create new pipeline jenkins_microk8s_rest1.
+    In Config tab, click "Add source" in Branch Sources section, select GitHub, 
+    Owner: sliu99, Repository: jenkins_microk8s_rest1,
+    Click Add button in Branch Sources section.
+    This configuration makes build agains code in github repository, so needs to check in latest code before the build.
+    
+* Change the shell to do real things, such as "mvn clean package", "mvn test".
+   When build, jar file is created in /home/sliu/.jenkins/workspace/jenkins_microk8s_rest1_master/target
+
+* Start microk8s. see readme.start_microk8s.txt
+//delete service
+microk8s.kubectl delete service rest-example
+
+
+* deploy shell will create service, deployment in microk8s
+
+
+After running the pipeline, 
+microk8s.kubectl get services
+NAME           TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+kubernetes     ClusterIP   10.152.183.1     <none>        443/TCP          30h
+rest-example   NodePort    10.152.183.130   <none>        8080:31772/TCP   3m2s
+
+microk8s.kubectl get deployments
+NAME           READY   UP-TO-DATE   AVAILABLE   AGE
+rest-example   1/1     1            1           5m47s
+
+microk8s.kubectl get pods
+NAME                            READY   STATUS    RESTARTS   AGE
+rest-example-54486868df-hjbkd   1/1     Running   0          6m13s
+
+//to run dashboard
+https://10.152.183.27
+
+//Test running rest service from outside the container in pod, say at host box
+curl http://localhost:31772/books
+[]
+
+//add a book
+curl -H "Content-Type:application/json" -X POST http://localhost:31772/books -d '{"id":1,"author":"Krochmalski", "title":"IDEA"}'
+{"id":1,"author":"Krochmalski","title":"IDEA"}
+
+//try to list books from running container
+curl http://localhost:31772/books
+[{"id":1,"author":"Krochmalski","title":"IDEA"}
+
+
+ifconfig   get ip=192.168.40.132
+
+//run from pc host console
+curl http://192.168.40.132:31772/books
+[{"id":1,"author":"Krochmalski","title":"IDEA"}]
+
