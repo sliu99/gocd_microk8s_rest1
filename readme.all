@@ -1,31 +1,39 @@
 
-Status: work
+Status: not work
+
+6/5/2019
 
 This project is originally from 
 /home/sliu/book_code/docker_and_kubernetes_for_java_developers_2017/Docker-and-Kubernetes-for-Java-Developers-master/rest-example-multiStages
 
 
-This app builds a jenkins pipeline with microk8s that build, test, deploy the app.
+This app builds a gocd pipeline with microk8s that build, test, deploy the app.
 
-* Use readme.github.txt to create github repository jenkins_microk8s_rest1.
+* Use readme.github.txt to create github repository gocd_microk8s_rest1.
 
-* Start jenkins locally with stages build, test and depoy. Each stage calls a shell to print "build", "test",
-    and "deploy". See readme.start_jenkins.txt.
-    Create new pipeline jenkins_microk8s_rest1.
-    In Config tab, click "Add source" in Branch Sources section, select GitHub, 
-    Owner: sliu99, Repository: jenkins_microk8s_rest1,
-    Click Add button in Branch Sources section.
-    This configuration makes build agains code in github repository, so needs to check in latest code before the build.
+* Create cocd pipleline gocd_microk8s_rest1 locally with stages Build, Test and Deploy. Each stage calls a shell to print "build", "test",
+    and "deploy". See readme.gocd.txt.
     
 * Change the shell to do real things, such as "mvn clean package", "mvn test".
-   When build, jar file is created in /home/sliu/.jenkins/workspace/jenkins_microk8s_rest1_master/target
-
+   When build, jar file is created in /var/lib/go-agent/pipelines/gocd_microk8s_rest1/target
+   
+   Click DASHBOARD tab on top to see pipeline status. 
+   To see buildStage log,
+   Double click build stage icon, click buildSourceCode link under Overview tab, click "Expand All" tab to see detailed log
+  
+   
 * Start microk8s. see readme.start_microk8s.txt
 //delete service
 microk8s.kubectl delete service rest-example
 
+* Add CreateServiceStage to create Kubernetes service
+   See readme.gocd.txt. 
 
-* deploy shell will create service, deployment in microk8s
+* Add CreateDeploymentStage to deploy
+   See readme.gocd.txt.
+
+* Add DeployStage
+   See readme.gocd.txt.
 
 
 After running the pipeline, 
