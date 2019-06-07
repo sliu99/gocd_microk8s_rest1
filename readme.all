@@ -1,5 +1,8 @@
 
 Status: not work
+Failed due to error
+cannot create user data directory: /var/go/snap/microk8s/522: Permission denied
+
 
 6/5/2019
 
